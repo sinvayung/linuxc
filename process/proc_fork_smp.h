@@ -5,8 +5,8 @@
  *      Author: rongxinhua
  */
 
-#ifndef PROCFORK_H_
-#define PROCFORK_H_
+#ifndef __PROC_FORK_SMP_H__
+#define __PROC_FORK_SMP_H__
 
 void test_fork();
 void test_vfork();
@@ -14,4 +14,4 @@ void test_wait();
 void test_execl();
 void test_signal();
 
-#endif /* PROCFORK_H_ */
+#endif /* __PROC_FORK_SMP_H__ */

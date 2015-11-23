@@ -5,7 +5,7 @@
  *      Author: rongxinhua
  */
 
-#include "procfork.h"
+#include "proc_fork_smp.h"
 
 #include <stdio.h>
 #include <unistd.h>
@@ -16,6 +16,7 @@
 
 static int data = 111;
 
+//fork不共享数据（子进程复制父进程的内存页）
 void test_fork()
 {
 	static int stackdata = 222;
@@ -39,6 +40,8 @@ void test_fork()
 	printf("end ...pid = %d, data = %d, stackdata = %d\n", getpid(), data, stackdata);
 }
 
+//vfork子进程共享父进程的内存，直至成功执行了exec()或_exit(); 
+//子进程调用exec()或_exit()之前，将暂停父进程的执行
 void test_vfork()
 {
 	static int stackdata = 222;
@@ -53,6 +56,7 @@ void test_vfork()
 		data *= 3;
 		stackdata *= 3;
 		printf("This is child process, pid = %d, data = %d, stackdata = %d\n", getpid(), data, stackdata);
+		_exit(0);
 		break;
 	default:
 		printf("This is parent process, pid = %d, childpid = %d\n", getpid(), pid);
@@ -74,7 +78,8 @@ void test_wait()
 	case 0:
 		printf("[%d] This is child process\n", getpid());
 		sleep(2);
-		break;
+		_exit(1);
+		//break;
 	default:
 		printf("[%d] This is parent process, childpid = %d\n", getpid(), pid);
 		break;
@@ -97,6 +102,10 @@ void test_wait()
 			}
 		} else {
 			printf("[%d] wait child %d end. exitStatus = %d\n", getpid(), childPid, exitStatus);
+			if (WIFEXITED(exitStatus))	printf("WIFEXITED\n");	//子进程正常结束
+			if (WIFSIGNALED(exitStatus))	printf("WIFSIGNALED\n");	//通过信号杀掉子进程
+			if (WIFSTOPPED(exitStatus))		printf("WIFSTOPPED\n");	//子进程因信号而停止
+			if (WIFCONTINUED(exitStatus))	printf("WIFCONTINUE\n");	//子进程收到SIGCONT而恢复执行
 		}
 	}
 }

@@ -1,0 +1,14 @@
+//Checkout代码
+git clone https://github.com/stanyung/linuxc.git
+
+//添加到版本控制
+git add .
+
+//提交
+git commit -m "first commit."
+
+//同步到服务器
+git push origin master
+
+//更新代码
+git pull
