@@ -1,4 +1,6 @@
-all : 
+CFLAGS := -pthread
+
+all : pthread_smp
 
 %.o : %.c
-	$(CC) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@

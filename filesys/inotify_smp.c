@@ -30,13 +30,16 @@ static void displayIntifyEvent(struct inotify_event *ep) {
 	printf("\n");
 }
 
-int main() {
+int main(int argc, char **argv) {
+	if (argc < 2) {
+		errExit("too less argv");
+	}
 	
 	int inotifyFd = inotify_init();
 	if (inotifyFd == -1) {
 		errExit("inotify_init");
 	}	
-	const char *pathname = "/home/rongxinhua";
+	const char *pathname = argv[1];
 	uint32_t mask = IN_ALL_EVENTS;
 	int watchFd = inotify_add_watch(inotifyFd, pathname, mask);
 	if (watchFd == -1) {
@@ -60,6 +63,7 @@ int main() {
 			displayIntifyEvent(event);
 			p += sizeof(struct inotify_event) + event->len;
 		}
+		printf("--------------------------\n");
 	}
 	
 	exit(EXIT_SUCCESS);
