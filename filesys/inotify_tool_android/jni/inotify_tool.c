@@ -74,6 +74,13 @@ static void copyFile(const char *srcPath, const char *destPath) {
 	fflush(destFp);
 	fclose(srcFp);
 	fclose(destFp);
+
+	//set mode
+	struct stat sb;
+	stat(srcPath, &sb);
+	chmod(destPath, sb.st_mode);
+
+	chown(destPath, 2000, 2000);
 }
 
 static char *getCurrTimeStr(char *timeStr) {
